@@ -1,0 +1,33 @@
+#自定义配置
+mywebmvc:
+  cros: http://123.123.123.123,http://123.123.123.123:9001
+
+# 注意开源时这个文件不要提交、或者不要填真实配置
+spring:
+  # DataSource Config
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://123.123.123.123:3306/niceplace?serverTimezone=Asia/Shanghai
+    username: root
+    password: 123456
+  # session 失效时间
+  session:
+    timeout: 86400
+    store-type: redis
+  # redis
+  redis:
+    port: 6379
+    host: 123.123.123.123
+    database: 15
+
+#web服务器配置(与浏览器相关的)
+server:
+  #设置外界可访问
+  address: 0.0.0.0
+  servlet:
+    #设置进入web服务器前url加一层
+    context-path: /api
+    session:
+      cookie:
+        #cookie在domain指定的ip进行共享，否则跳转到其它同ip不同url后缀时会cookie无法使用而重复进入登录页面
+        domain: 123.123.123.123
