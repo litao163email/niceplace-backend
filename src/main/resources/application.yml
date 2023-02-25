@@ -1,6 +1,8 @@
 #自定义配置
 mywebmvc:
-  cros: http://localhost:5173,http://localhost:9001
+  cros: http://localhost:3000,http://localhost:5173,http://localhost:9001
+  #设置@CrossOrigin
+  cros2: http://localhost:9001
 
 #spring配置
 spring:
@@ -29,7 +31,7 @@ spring:
 
 #web服务器配置(与浏览器相关的)
 server:
-  port: 8080
+  port: 8081
   #设置servlet
   servlet:
     #设置进入web服务器前url加一层

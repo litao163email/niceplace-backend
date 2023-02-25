@@ -34,7 +34,7 @@ import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/user")
-@CrossOrigin(origins = {"http://localhost:5173"})
+@CrossOrigin(origins = {"${mywebmvc.cros2}"})
 @Slf4j
 public class UserController {
 
@@ -85,7 +85,9 @@ public class UserController {
 
     @GetMapping("/current")
     public BaseResponse<User> getCurrentUser(HttpServletRequest request) {
+        log.info("/current入参:"+request);
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        log.info("/current获取session结果:"+userObj);
         User currentUser = (User) userObj;
         if (currentUser == null) {
             throw new BusinessException(ErrorCode.NOT_LOGIN);

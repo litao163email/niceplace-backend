@@ -4,6 +4,29 @@ database if not exists niceplace;
 use
 niceplace;
 
+--视频信息表
+CREATE TABLE `video_info` (
+  `id` int(32) NOT NULL AUTO_INCREMENT COMMENT '主键',
+  `videoName` varchar(255) DEFAULT NULL COMMENT '视频名称',
+  `videoUrl` varchar(255) DEFAULT NULL COMMENT '视频url',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '视频描述',
+  `oosIp` varchar(32) DEFAULT NULL COMMENT '目前所在服务器ip',
+  `src` varchar(32) DEFAULT NULL COMMENT '相对路径(方便转移)',
+  `pictureUrl` varchar(255) DEFAULT NULL COMMENT '缩略图',
+  `tags` varchar(255) DEFAULT NULL COMMENT '视频标签',
+  `loadUserId` int(32) DEFAULT NULL COMMENT '上传人id',
+  `teamId` int(32) DEFAULT NULL COMMENT '团队id',
+  `status` int(8) DEFAULT NULL COMMENT '状态(0-正常，1-下架，2-作者设不可见)',
+  `viewCount` int(255) NOT NULL COMMENT '播放量',
+  `likeCount` int(255) DEFAULT NULL COMMENT '点赞数',
+  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
+  `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
+  `expireTime` datetime DEFAULT NULL COMMENT '过期时间',
+  `isDelete` int(4) DEFAULT NULL COMMENT '是否删除(0/1删除)',
+  `oosIsDelete` int(8) NOT NULL COMMENT '在文件服务器中是否删除(0/1删除)',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 -- 用户表
 create table user
 (
