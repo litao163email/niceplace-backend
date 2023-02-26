@@ -7,25 +7,27 @@ niceplace;
 --视频信息表
 CREATE TABLE `video_info` (
   `id` int(32) NOT NULL AUTO_INCREMENT COMMENT '主键',
-  `videoName` varchar(255) DEFAULT NULL COMMENT '视频名称',
-  `videoUrl` varchar(255) DEFAULT NULL COMMENT '视频url',
+  `video_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '视频名称',
+  `video_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '视频url',
   `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '视频描述',
-  `oosIp` varchar(32) DEFAULT NULL COMMENT '目前所在服务器ip',
+  `oos_ip` varchar(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '目前所在服务器ip',
   `src` varchar(32) DEFAULT NULL COMMENT '相对路径(方便转移)',
-  `pictureUrl` varchar(255) DEFAULT NULL COMMENT '缩略图',
+  `picture_url` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL COMMENT '缩略图',
   `tags` varchar(255) DEFAULT NULL COMMENT '视频标签',
-  `loadUserId` int(32) DEFAULT NULL COMMENT '上传人id',
-  `teamId` int(32) DEFAULT NULL COMMENT '团队id',
-  `status` int(8) DEFAULT NULL COMMENT '状态(0-正常，1-下架，2-作者设不可见)',
-  `viewCount` int(255) NOT NULL COMMENT '播放量',
-  `likeCount` int(255) DEFAULT NULL COMMENT '点赞数',
-  `createTime` datetime DEFAULT NULL COMMENT '创建时间',
-  `updateTime` datetime DEFAULT NULL COMMENT '更新时间',
-  `expireTime` datetime DEFAULT NULL COMMENT '过期时间',
-  `isDelete` int(4) DEFAULT NULL COMMENT '是否删除(0/1删除)',
-  `oosIsDelete` int(8) NOT NULL COMMENT '在文件服务器中是否删除(0/1删除)',
+  `user_id` bigint(20) DEFAULT NULL COMMENT '上传人id',
+  `team_id` int(32) DEFAULT NULL COMMENT '团队id',
+  `video_type_code` int(16) DEFAULT NULL COMMENT '视频类型(0-美女,1-风景,2-美食,3-电影,4-搞笑,5-生活)',
+  `status` int(8) DEFAULT NULL COMMENT '状态(0-正常，1-下架，2-作者设不可见，3-加密，4-审核中，5-审核不通过)',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  `view_count` int(255) DEFAULT NULL COMMENT '播放量',
+  `like_count` int(255) DEFAULT NULL COMMENT '点赞数',
+  `create_time` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_time` datetime DEFAULT NULL COMMENT '更新时间',
+  `expire_time` datetime DEFAULT NULL COMMENT '过期时间',
+  `is_delete` int(4) DEFAULT NULL COMMENT '是否删除(0/1删除)',
+  `oos_is_delete` int(8) DEFAULT NULL COMMENT '在文件服务器中是否删除(0/1删除)',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- 用户表
 create table user

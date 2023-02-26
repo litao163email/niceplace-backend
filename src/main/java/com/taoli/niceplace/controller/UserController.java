@@ -154,6 +154,10 @@ public class UserController {
         }
         User loginUser = userService.getLoginUser(request);
         int result = userService.updateUser(user, loginUser);
+        if (result>0){
+            //在缓存中移除登录态,这样如果更新标签，就会重新拿用户的信息
+            request.getSession().removeAttribute(USER_LOGIN_STATE);
+        }
         return ResultUtils.success(result);
     }
 

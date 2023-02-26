@@ -52,13 +52,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户账号过短,至少4位");
         }
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短,至少8位");
         }
-        if (niceCode.length() > 5) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "niceplace编号过长");
+        if (niceCode.length() > 9) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "niceplace编号过长,至多10位");
         }
         // 账户不能包含特殊字符
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
@@ -88,6 +88,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         String encryptPassword = DigestUtils.md5DigestAsHex((SALT + userPassword).getBytes());
         // 3. 插入数据
         User user = new User();
+        user.setTags("[\"美女\",\"风景\",\"美食\",\"电影\",\"搞笑\"]");
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setNiceCode(niceCode);

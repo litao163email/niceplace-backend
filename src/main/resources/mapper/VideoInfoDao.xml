@@ -1,0 +1,292 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taoli.niceplace.dao.VideoInfoDao">
+
+    <resultMap type="com.taoli.niceplace.entity.VideoInfo" id="VideoInfoMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="src" column="src" jdbcType="VARCHAR"/>
+        <result property="tags" column="tags" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="videoName" column="video_name" jdbcType="VARCHAR"/>
+        <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
+        <result property="oosIp" column="oos_ip" jdbcType="VARCHAR"/>
+        <result property="pictureUrl" column="picture_url" jdbcType="VARCHAR"/>
+        <result property="userId" column="user_id" jdbcType="BIGINT"/>
+        <result property="teamId" column="team_id" jdbcType="INTEGER"/>
+        <result property="viewCount" column="view_count" jdbcType="INTEGER"/>
+        <result property="likeCount" column="like_count" jdbcType="INTEGER"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="INTEGER"/>
+        <result property="oosIsDelete" column="oos_is_delete" jdbcType="INTEGER"/>
+        <result property="videoTypeCode" column="video_type_code" jdbcType="INTEGER"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VideoInfoMap">
+        select
+          id, description, src, tags, status, video_name, video_url, oos_ip, picture_url, user_id, team_id, view_count, like_count, create_time, update_time, expire_time, is_delete, oos_is_delete, video_type_code, password
+        from video_info
+        where id = #{id}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VideoInfoMap">
+        select
+          id, description, src, tags, status, video_name, video_url, oos_ip, picture_url, user_id, team_id, view_count, like_count, create_time, update_time, expire_time, is_delete, oos_is_delete, video_type_code, password
+        from video_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="src != null and src != ''">
+                and src = #{src}
+            </if>
+            <if test="tags != null and tags != ''">
+                and tags = #{tags}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="statusList != null and statusList.size>0">
+                and status in
+                <foreach collection="statusList" item="item" separator="," open="(" close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="videoName != null and videoName != ''">
+                and video_name = #{videoName}
+            </if>
+            <if test="videoUrl != null and videoUrl != ''">
+                and video_url = #{videoUrl}
+            </if>
+            <if test="oosIp != null and oosIp != ''">
+                and oos_ip = #{oosIp}
+            </if>
+            <if test="pictureUrl != null and pictureUrl != ''">
+                and picture_url = #{pictureUrl}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="teamId != null">
+                and team_id = #{teamId}
+            </if>
+            <if test="viewCount != null">
+                and view_count = #{viewCount}
+            </if>
+            <if test="likeCount != null">
+                and like_count = #{likeCount}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="expireTime != null">
+                and expire_time = #{expireTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="oosIsDelete != null">
+                and oos_is_delete = #{oosIsDelete}
+            </if>
+            <if test="videoTypeCode != null and videoTypeCode != ''">
+                and video_type_code = #{videoTypeCode}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from video_info
+        <where>
+            <if test="id != null">
+                and id = #{id}
+            </if>
+            <if test="description != null and description != ''">
+                and description = #{description}
+            </if>
+            <if test="src != null and src != ''">
+                and src = #{src}
+            </if>
+            <if test="tags != null and tags != ''">
+                and tags = #{tags}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="videoName != null and videoName != ''">
+                and video_name = #{videoName}
+            </if>
+            <if test="videoUrl != null and videoUrl != ''">
+                and video_url = #{videoUrl}
+            </if>
+            <if test="oosIp != null and oosIp != ''">
+                and oos_ip = #{oosIp}
+            </if>
+            <if test="pictureUrl != null and pictureUrl != ''">
+                and picture_url = #{pictureUrl}
+            </if>
+            <if test="userId != null">
+                and user_id = #{userId}
+            </if>
+            <if test="teamId != null">
+                and team_id = #{teamId}
+            </if>
+            <if test="viewCount != null">
+                and view_count = #{viewCount}
+            </if>
+            <if test="likeCount != null">
+                and like_count = #{likeCount}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="expireTime != null">
+                and expire_time = #{expireTime}
+            </if>
+            <if test="isDelete != null">
+                and is_delete = #{isDelete}
+            </if>
+            <if test="oosIsDelete != null">
+                and oos_is_delete = #{oosIsDelete}
+            </if>
+            <if test="videoTypeCode != null and videoTypeCode != ''">
+                and video_type_code = #{videoTypeCode}
+            </if>
+            <if test="password != null and password != ''">
+                and password = #{password}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="id" useGeneratedKeys="true">
+        insert into video_info(description, src, tags, status, video_name, video_url, oos_ip, picture_url, user_id, team_id, view_count, like_count, create_time, update_time, expire_time, is_delete, oos_is_delete, video_type_code, password)
+        values (#{description}, #{src}, #{tags}, #{status}, #{videoName}, #{videoUrl}, #{oosIp}, #{pictureUrl}, #{userId}, #{teamId}, #{viewCount}, #{likeCount}, now(),  now(), #{expireTime}, #{isDelete}, #{oosIsDelete}, #{videoTypeCode}, #{password})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into video_info(description, src, tags, status, video_name, video_url, oos_ip, picture_url, user_id, team_id, view_count, like_count, create_time, update_time, expire_time, is_delete, oos_is_delete, video_type_code, password)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.description}, #{entity.src}, #{entity.tags}, #{entity.status}, #{entity.videoName}, #{entity.videoUrl}, #{entity.oosIp}, #{entity.pictureUrl}, #{entity.userId}, #{entity.teamId}, #{entity.viewCount}, #{entity.likeCount}, #{entity.createTime}, #{entity.updateTime}, #{entity.expireTime}, #{entity.isDelete}, #{entity.oosIsDelete}, #{entity.videoTypeCode}, #{entity.password})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into video_info(description, src, tags, status, video_name, video_url, oos_ip, picture_url, user_id, team_id, view_count, like_count, create_time, update_time, expire_time, is_delete, oos_is_delete, video_type_code, password)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.description}, #{entity.src}, #{entity.tags}, #{entity.status}, #{entity.videoName}, #{entity.videoUrl}, #{entity.oosIp}, #{entity.pictureUrl}, #{entity.userId}, #{entity.teamId}, #{entity.viewCount}, #{entity.likeCount}, #{entity.createTime}, #{entity.updateTime}, #{entity.expireTime}, #{entity.isDelete}, #{entity.oosIsDelete}, #{entity.videoTypeCode}, #{entity.password})
+        </foreach>
+        on duplicate key update
+        description = values(description),
+        src = values(src),
+        tags = values(tags),
+        status = values(status),
+        video_name = values(video_name),
+        video_url = values(video_url),
+        oos_ip = values(oos_ip),
+        picture_url = values(picture_url),
+        user_id = values(user_id),
+        team_id = values(team_id),
+        view_count = values(view_count),
+        like_count = values(like_count),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        expire_time = values(expire_time),
+        is_delete = values(is_delete),
+        oos_is_delete = values(oos_is_delete),
+        video_type_code = values(video_type_code),
+        password = values(password)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update video_info
+        <set>
+            <if test="description != null and description != ''">
+                description = #{description},
+            </if>
+            <if test="src != null and src != ''">
+                src = #{src},
+            </if>
+            <if test="tags != null and tags != ''">
+                tags = #{tags},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="videoName != null and videoName != ''">
+                video_name = #{videoName},
+            </if>
+            <if test="videoUrl != null and videoUrl != ''">
+                video_url = #{videoUrl},
+            </if>
+            <if test="oosIp != null and oosIp != ''">
+                oos_ip = #{oosIp},
+            </if>
+            <if test="pictureUrl != null and pictureUrl != ''">
+                picture_url = #{pictureUrl},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId},
+            </if>
+            <if test="teamId != null">
+                team_id = #{teamId},
+            </if>
+            <if test="viewCount != null">
+                view_count = #{viewCount},
+            </if>
+            <if test="likeCount != null">
+                like_count = #{likeCount},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime},
+            </if>
+            <if test="isDelete != null">
+                is_delete = #{isDelete},
+            </if>
+            <if test="oosIsDelete != null">
+                oos_is_delete = #{oosIsDelete},
+            </if>
+            <if test="videoTypeCode != null and videoTypeCode != ''">
+                video_type_code = #{videoTypeCode},
+            </if>
+            <if test="password != null and password != ''">
+                password = #{password},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from video_info where id = #{id}
+    </delete>
+
+</mapper>
+

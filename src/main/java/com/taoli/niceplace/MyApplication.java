@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
-@MapperScan("com.taoli.niceplace.mapper")
+@MapperScan({"com.taoli.niceplace.mapper","com.taoli.niceplace.dao"})
 @EnableScheduling
 public class MyApplication {
 
