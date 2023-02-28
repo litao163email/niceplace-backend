@@ -52,11 +52,11 @@ public class UserController {
         String userAccount = userRegisterRequest.getUserAccount();
         String userPassword = userRegisterRequest.getUserPassword();
         String checkPassword = userRegisterRequest.getCheckPassword();
-        String niceCode = userRegisterRequest.getNiceCode();
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, niceCode)) {
+        String userName = userRegisterRequest.getUserName();
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, userName)) {
             return null;
         }
-        long result = userService.userRegister(userAccount, userPassword, checkPassword, niceCode);
+        long result = userService.userRegister(userAccount, userPassword, checkPassword, userName);
         return ResultUtils.success(result);
     }
 
@@ -149,12 +149,12 @@ public class UserController {
     @PostMapping("/update")
     public BaseResponse<Integer> updateUser(@RequestBody User user, HttpServletRequest request) {
         // 校验参数是否为空
-        if (user == null) {
+        if (user == null || user.getGender()!=0 || user.getGender()!=1) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
         User loginUser = userService.getLoginUser(request);
         int result = userService.updateUser(user, loginUser);
-        if (result>0){
+        if (result>0 && StringUtils.isNotBlank(user.getTags())){
             //在缓存中移除登录态,这样如果更新标签，就会重新拿用户的信息
             request.getSession().removeAttribute(USER_LOGIN_STATE);
         }

@@ -31,6 +31,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+
 /**
  * 队伍接口
  *
@@ -207,6 +209,11 @@ public class TeamController {
         if (teamQuery == null) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR);
         }
+        //观察用户权限
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        boolean admin = userService.isAdmin(currentUser);
+
         User loginUser = userService.getLoginUser(request);
         QueryWrapper<UserTeam> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userId", loginUser.getId());
@@ -223,7 +230,8 @@ public class TeamController {
                 .collect(Collectors.groupingBy(UserTeam::getTeamId));
         List<Long> idList = new ArrayList<>(listMap.keySet());
         teamQuery.setIdList(idList);
-        List<TeamUserVO> teamList = teamService.listTeams(teamQuery, true);
+        teamQuery.setUserId(currentUser.getId());
+        List<TeamUserVO> teamList = teamService.listTeams(teamQuery,admin );
         return ResultUtils.success(teamList);
     }
 }

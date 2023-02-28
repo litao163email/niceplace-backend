@@ -22,7 +22,7 @@ public interface UserService extends IService<User> {
      * @param niceCode    niceplace编号
      * @return 新用户 id
      */
-    long userRegister(String userAccount, String userPassword, String checkPassword, String niceCode);
+    long userRegister(String userAccount, String userPassword, String checkPassword, String userName);
 
     /**
      * 用户登录

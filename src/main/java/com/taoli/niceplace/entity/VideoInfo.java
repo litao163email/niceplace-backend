@@ -39,6 +39,8 @@ public class VideoInfo implements Serializable {
 
     private ArrayList<Integer> statusList;
 
+    private Integer reviewPersonId;
+
     /**
      * 视频类型码
      */

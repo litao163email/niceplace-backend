@@ -20,5 +20,5 @@ public class UserRegisterRequest implements Serializable {
 
     private String checkPassword;
 
-    private String niceCode;
+    private String userName;
 }

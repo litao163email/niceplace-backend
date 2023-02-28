@@ -21,7 +21,7 @@ public interface VideoInfoService {
      *
      * @return 实例对象
      */
-    PageInfo<VideoInfo> queryById(HttpServletRequest request);
+    PageInfo<VideoInfo> queryById(VideoInfo videoInfo,HttpServletRequest request);
 
     /**
      * 分页查询

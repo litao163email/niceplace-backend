@@ -3,6 +3,7 @@ package com.taoli.niceplace.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taoli.niceplace.common.ErrorCode;
+import com.taoli.niceplace.common.ImageUrlApi;
 import com.taoli.niceplace.common.VideoStatusCode;
 import com.taoli.niceplace.entity.VideoInfo;
 import com.taoli.niceplace.dao.VideoInfoDao;
@@ -40,16 +41,15 @@ public class VideoInfoServiceImpl implements VideoInfoService {
     private UserService userService;
 
     /**
-     * 查询我发布的视频
+     * 查询我发布的视频(中心)
      * @return 实例对象
      */
     @Override
-    public PageInfo<VideoInfo> queryById(HttpServletRequest request) {
+    public PageInfo<VideoInfo> queryById(VideoInfo videoInfo,HttpServletRequest request) {
 
         //如果是用户自己，只能查询0(正常)、1(下架)、2(作者设置不可见)、3(加密)、4(审核中)，其余不允许
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
-        VideoInfo videoInfo = new VideoInfo();
         if (currentUser != null) {
             videoInfo.setUserId(currentUser.getId());
             videoInfo.setStatusList(new ArrayList<>(Arrays.asList(0,1,2,3,4)));
@@ -57,6 +57,8 @@ public class VideoInfoServiceImpl implements VideoInfoService {
             //未登录
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
+
+        PageHelper.startPage(videoInfo.getPageNum(), videoInfo.getPageSize());
         List<VideoInfo> videoInfos = this.videoInfoDao.queryAllByLimit(videoInfo);
         return new PageInfo<>(videoInfos);
     }
@@ -137,10 +139,12 @@ public class VideoInfoServiceImpl implements VideoInfoService {
                 //若不为空,则是传入的"其它用户的id"
             }
 
-        }else if(currentUser != null && !userService.isAdmin(currentUser)){
+        }else if(currentUser != null && ! userService.isAdmin(currentUser)){
             //无权限则置空
             videoInfo.setUserId(null);
             videoInfo.setTeamId(null);
+            videoInfo.setStatus(null);
+
             //非管理员权限下,设置成用户自己的id
             videoInfo.setUserId(currentUser.getId());
         }else {
@@ -153,6 +157,8 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         //设置是否删除
         videoInfo.setIsDelete(0);
         videoInfo.setOosIsDelete(0);
+        videoInfo.setPictureUrl(ImageUrlApi.imageApi());
+        //这里不对视频类型进行审批,由用户决定,在管理员审批阶段再可以移去某些视频类型
 
         int insert = this.videoInfoDao.insert(videoInfo);
         return insert;
@@ -165,6 +171,18 @@ public class VideoInfoServiceImpl implements VideoInfoService {
      */
     @Override
     public Integer update(VideoInfo videoInfo,HttpServletRequest request) {
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+
+        //审核员id
+        videoInfo.setUserId(currentUser.getId());
+
+        if (!userService.isAdmin(currentUser)) {
+            //无权限
+            throw new BusinessException(ErrorCode.NO_AUTH);
+        }
+
+
         log.info("审核意见:"+videoInfo.getStatus());
         int update = this.videoInfoDao.update(videoInfo);
         return update;

@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.taoli.niceplace.common.ErrorCode;
+import com.taoli.niceplace.common.ImageUrlApi;
 import com.taoli.niceplace.constant.UserConstant;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
@@ -46,9 +47,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
     private static final String SALT = "taoli";
 
     @Override
-    public long userRegister(String userAccount, String userPassword, String checkPassword, String niceCode) {
+    public long userRegister(String userAccount, String userPassword, String checkPassword, String userName) {
         // 1. 校验
-        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, niceCode)) {
+        if (StringUtils.isAnyBlank(userAccount, userPassword, checkPassword, userName)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "参数为空");
         }
         if (userAccount.length() < 4) {
@@ -57,8 +58,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (userPassword.length() < 8 || checkPassword.length() < 8) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短,至少8位");
         }
-        if (niceCode.length() > 9) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "niceplace编号过长,至多10位");
+        if (userName.length() > 9) {
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "niceplace编号过长,至多9位");
         }
         // 账户不能包含特殊字符
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
@@ -77,9 +78,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "账号重复");
         }
-        // niceplace编号不能重复
+        // userName编号不能重复
         queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("niceCode", niceCode);
+        queryWrapper.eq("niceCode", userName);
         count = userMapper.selectCount(queryWrapper);
         if (count > 0) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "编号重复");
@@ -91,7 +92,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setTags("[\"美女\",\"风景\",\"美食\",\"电影\",\"搞笑\"]");
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
-        user.setNiceCode(niceCode);
+        user.setUsername(userName);
+        user.setAvatarUrl(ImageUrlApi.imageApi());
         boolean saveResult = this.save(user);
         if (!saveResult) {
             return -1;

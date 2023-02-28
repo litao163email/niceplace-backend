@@ -49,8 +49,8 @@ public class VideoInfoController {
      * @return 数据
      */
     @GetMapping("/getMyVideo")
-    public BaseResponse<PageInfo<VideoInfo>> queryById(HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.queryById(request));
+    public BaseResponse<PageInfo<VideoInfo>> queryById(VideoInfo videoInfo,HttpServletRequest request) {
+        return ResultUtils.success(this.videoInfoService.queryById(videoInfo,request));
     }
 
     /**

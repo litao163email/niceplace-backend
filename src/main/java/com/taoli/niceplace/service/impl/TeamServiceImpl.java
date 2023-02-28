@@ -169,7 +169,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
                 statusEnum = TeamStatusEnum.PUBLIC;
             }
             //如果不是管理员且是加密的，则不允许查看
-            if (!isAdmin && statusEnum.equals(TeamStatusEnum.PRIVATE)) {
+            if ( !isAdmin && statusEnum.equals(TeamStatusEnum.PRIVATE)) {
                 throw new BusinessException(ErrorCode.NO_AUTH);
             }
             queryWrapper.eq("status", statusEnum.getValue());
