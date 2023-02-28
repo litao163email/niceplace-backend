@@ -1,9 +1,10 @@
-package com.taoli.niceplace.common;
+package com.taoli.niceplace.utils;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
+import com.taoli.niceplace.common.ErrorCode;
 import com.taoli.niceplace.exception.BusinessException;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -20,12 +21,16 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 public class ImageUrlApi {
 
     /**
-     * 第三方接口
+     * 第三方接口自动获取图片url
      */
     private static String niceImageGiver="https://api.btstu.cn/sjtx/api.php?lx=c1&format=json";
 
 
-    public static String imageApi(){
+    /**
+     * 获取图片
+     * @return
+     */
+    public static String getImageUrl(){
 
         String imageUrl = "emptyImage";
         try {

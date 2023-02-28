@@ -5,7 +5,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.taoli.niceplace.common.ErrorCode;
-import com.taoli.niceplace.common.ImageUrlApi;
+import com.taoli.niceplace.utils.ImageUrlApi;
 import com.taoli.niceplace.constant.UserConstant;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
@@ -93,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setUsername(userName);
-        user.setAvatarUrl(ImageUrlApi.imageApi());
+        user.setAvatarUrl(ImageUrlApi.getImageUrl());
         boolean saveResult = this.save(user);
         if (!saveResult) {
             return -1;

@@ -3,6 +3,8 @@ package com.taoli.niceplace.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taoli.niceplace.common.ErrorCode;
+import com.taoli.niceplace.utils.DateTimeUtils;
+import com.taoli.niceplace.utils.ImageUrlApi;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
 import com.taoli.niceplace.model.domain.UserTeam;
@@ -27,6 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -100,12 +103,13 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         QueryWrapper<Team> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("userId", userId);
         long hasTeamNum = this.count(queryWrapper);
-        if (hasTeamNum >= 5) {
+        if (hasTeamNum >= 5 && !userService.isAdmin(loginUser)) {
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户最多创建 5 个队伍");
         }
         // 8. 插入队伍信息到队伍表
         team.setId(null);
         team.setUserId(userId);
+        team.setAvatarUrl(ImageUrlApi.getImageUrl());
         boolean result = this.save(team);
         Long teamId = team.getId();
         if (!result || teamId == null) {
@@ -203,6 +207,11 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             }
             teamUserVOList.add(teamUserVO);
         }
+        //时间转码
+        DateTimeFormatter fmt = DateTimeUtils.dateTimeFormatter2Str();
+//        teamUserVOList.forEach(res->{
+//            res.setExpireTimeStr(res.getExpireTime().format(fmt));
+//        });
         return teamUserVOList;
     }
 

@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.taoli.niceplace.dao.VideoCommentDao">
+
+    <resultMap type="com.taoli.niceplace.entity.VideoComment" id="VideoCommentMap">
+        <result property="commentId" column="comment_id" jdbcType="INTEGER"/>
+        <result property="videoId" column="video_id" jdbcType="INTEGER"/>
+        <result property="videoUrl" column="video_url" jdbcType="VARCHAR"/>
+        <result property="commentDescription" column="comment_description" jdbcType="VARCHAR"/>
+        <result property="commentUserUrl" column="comment_user_url" jdbcType="VARCHAR"/>
+        <result property="commentUserId" column="comment_user_id" jdbcType="INTEGER"/>
+        <result property="commentUserName" column="comment_user_name" jdbcType="VARCHAR"/>
+        <result property="commentTime" column="comment_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="INTEGER"/>
+        <result property="reviewPersonId" column="review_person_id" jdbcType="INTEGER"/>
+        <result property="reviewPersonName" column="review_person_name" jdbcType="VARCHAR"/>
+        <result property="reviewTime" column="review_time" jdbcType="TIMESTAMP"/>
+        <result property="reviewReply" column="review_reply" jdbcType="VARCHAR"/>
+        <result property="createTime" column="create_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="expireTime" column="expire_time" jdbcType="TIMESTAMP"/>
+        <result property="isDelete" column="is_delete" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!--查询单个-->
+    <select id="queryById" resultMap="VideoCommentMap">
+        select
+          comment_id, video_id, video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete
+        from video_comment
+        where comment_id = #{commentId}
+    </select>
+
+    <!--查询指定行数据-->
+    <select id="queryAllByLimit" resultMap="VideoCommentMap">
+        select
+          comment_id, video_id, video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete
+        from video_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="videoId != null">
+                and video_id = #{videoId}
+            </if>
+            <if test="videoUrl != null and videoUrl != ''">
+                and video_url = #{videoUrl}
+            </if>
+            <if test="commentDescription != null and commentDescription != ''">
+                and comment_description = #{commentDescription}
+            </if>
+            <if test="commentUserUrl != null and commentUserUrl != ''">
+                and comment_user_url = #{commentUserUrl}
+            </if>
+            <if test="commentUserId != null">
+                and comment_user_id = #{commentUserId}
+            </if>
+            <if test="commentUserName != null and commentUserName != ''">
+                and comment_user_name = #{commentUserName}
+            </if>
+            <if test="commentTime != null">
+                and comment_time = #{commentTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="reviewPersonId != null">
+                and review_person_id = #{reviewPersonId}
+            </if>
+            <if test="reviewPersonName != null and reviewPersonName != ''">
+                and review_person_name = #{reviewPersonName}
+            </if>
+            <if test="reviewTime != null">
+                and review_time = #{reviewTime}
+            </if>
+            <if test="reviewReply != null and reviewReply != ''">
+                and review_reply = #{reviewReply}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="expireTime != null">
+                and expire_time = #{expireTime}
+            </if>
+            <if test="isDelete != null and isDelete != ''">
+                and is_delete = #{isDelete}
+            </if>
+        </where>
+    </select>
+
+    <!--统计总行数-->
+    <select id="count" resultType="java.lang.Long">
+        select count(1)
+        from video_comment
+        <where>
+            <if test="commentId != null">
+                and comment_id = #{commentId}
+            </if>
+            <if test="videoId != null">
+                and video_id = #{videoId}
+            </if>
+            <if test="videoUrl != null and videoUrl != ''">
+                and video_url = #{videoUrl}
+            </if>
+            <if test="commentDescription != null and commentDescription != ''">
+                and comment_description = #{commentDescription}
+            </if>
+            <if test="commentUserUrl != null and commentUserUrl != ''">
+                and comment_user_url = #{commentUserUrl}
+            </if>
+            <if test="commentUserId != null">
+                and comment_user_id = #{commentUserId}
+            </if>
+            <if test="commentUserName != null and commentUserName != ''">
+                and comment_user_name = #{commentUserName}
+            </if>
+            <if test="commentTime != null">
+                and comment_time = #{commentTime}
+            </if>
+            <if test="status != null">
+                and status = #{status}
+            </if>
+            <if test="reviewPersonId != null">
+                and review_person_id = #{reviewPersonId}
+            </if>
+            <if test="reviewPersonName != null and reviewPersonName != ''">
+                and review_person_name = #{reviewPersonName}
+            </if>
+            <if test="reviewTime != null">
+                and review_time = #{reviewTime}
+            </if>
+            <if test="reviewReply != null and reviewReply != ''">
+                and review_reply = #{reviewReply}
+            </if>
+            <if test="createTime != null">
+                and create_time = #{createTime}
+            </if>
+            <if test="updateTime != null">
+                and update_time = #{updateTime}
+            </if>
+            <if test="expireTime != null">
+                and expire_time = #{expireTime}
+            </if>
+            <if test="isDelete != null and isDelete != ''">
+                and is_delete = #{isDelete}
+            </if>
+        </where>
+    </select>
+
+    <!--新增所有列-->
+    <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
+        insert into video_comment(video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete)
+        values (#{videoUrl}, #{commentDescription}, #{commentUserUrl}, #{commentUserId}, #{commentUserName}, #{commentTime}, #{status}, #{reviewPersonId}, #{reviewPersonName}, #{reviewTime}, #{reviewReply}, #{createTime}, #{updateTime}, #{expireTime}, #{isDelete})
+    </insert>
+
+    <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into video_comment(video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.videoUrl}, #{entity.commentDescription}, #{entity.commentUserUrl}, #{entity.commentUserId}, #{entity.commentUserName}, #{entity.commentTime}, #{entity.status}, #{entity.reviewPersonId}, #{entity.reviewPersonName}, #{entity.reviewTime}, #{entity.reviewReply}, #{entity.createTime}, #{entity.updateTime}, #{entity.expireTime}, #{entity.isDelete})
+        </foreach>
+    </insert>
+
+    <insert id="insertOrUpdateBatch" keyProperty="commentId" useGeneratedKeys="true">
+        insert into video_comment(video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.videoUrl}, #{entity.commentDescription}, #{entity.commentUserUrl}, #{entity.commentUserId}, #{entity.commentUserName}, #{entity.commentTime}, #{entity.status}, #{entity.reviewPersonId}, #{entity.reviewPersonName}, #{entity.reviewTime}, #{entity.reviewReply}, #{entity.createTime}, #{entity.updateTime}, #{entity.expireTime}, #{entity.isDelete})
+        </foreach>
+        on duplicate key update
+        video_url = values(video_url),
+        comment_description = values(comment_description),
+        comment_user_url = values(comment_user_url),
+        comment_user_id = values(comment_user_id),
+        comment_user_name = values(comment_user_name),
+        comment_time = values(comment_time),
+        status = values(status),
+        review_person_id = values(review_person_id),
+        review_person_name = values(review_person_name),
+        review_time = values(review_time),
+        review_reply = values(review_reply),
+        create_time = values(create_time),
+        update_time = values(update_time),
+        expire_time = values(expire_time),
+        is_delete = values(is_delete)
+    </insert>
+
+    <!--通过主键修改数据-->
+    <update id="update">
+        update video_comment
+        <set>
+            <if test="videoUrl != null and videoUrl != ''">
+                video_url = #{videoUrl},
+            </if>
+            <if test="commentDescription != null and commentDescription != ''">
+                comment_description = #{commentDescription},
+            </if>
+            <if test="commentUserUrl != null and commentUserUrl != ''">
+                comment_user_url = #{commentUserUrl},
+            </if>
+            <if test="commentUserId != null">
+                comment_user_id = #{commentUserId},
+            </if>
+            <if test="commentUserName != null and commentUserName != ''">
+                comment_user_name = #{commentUserName},
+            </if>
+            <if test="commentTime != null">
+                comment_time = #{commentTime},
+            </if>
+            <if test="status != null">
+                status = #{status},
+            </if>
+            <if test="reviewPersonId != null">
+                review_person_id = #{reviewPersonId},
+            </if>
+            <if test="reviewPersonName != null and reviewPersonName != ''">
+                review_person_name = #{reviewPersonName},
+            </if>
+            <if test="reviewTime != null">
+                review_time = #{reviewTime},
+            </if>
+            <if test="reviewReply != null and reviewReply != ''">
+                review_reply = #{reviewReply},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime},
+            </if>
+            <if test="expireTime != null">
+                expire_time = #{expireTime},
+            </if>
+            <if test="isDelete != null and isDelete != ''">
+                is_delete = #{isDelete},
+            </if>
+        </set>
+        where comment_id = #{commentId}
+    </update>
+
+    <!--通过主键删除-->
+    <delete id="deleteById">
+        delete from video_comment where comment_id = #{commentId}
+    </delete>
+
+</mapper>
+

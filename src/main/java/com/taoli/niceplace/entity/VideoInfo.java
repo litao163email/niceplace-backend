@@ -1,8 +1,10 @@
 package com.taoli.niceplace.entity;
 
+import com.taoli.niceplace.model.domain.User;
 import io.swagger.models.auth.In;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.io.Serializable;
@@ -71,6 +73,10 @@ public class VideoInfo implements Serializable {
      */
     private Long userId;
     /**
+     * 上传人信息
+     */
+    private User user;
+    /**
      * 团队id
      */
     private Integer teamId;
@@ -93,7 +99,8 @@ public class VideoInfo implements Serializable {
     /**
      * 过期时间
      */
-    private Date expireTime;
+    private LocalDateTime expireTime;
+    private String expireTimeStr;
     /**
      * 是否删除(0/1删除)
      */
