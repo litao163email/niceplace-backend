@@ -151,8 +151,8 @@
 
     <!--新增所有列-->
     <insert id="insert" keyProperty="commentId" useGeneratedKeys="true">
-        insert into video_comment(video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete)
-        values (#{videoUrl}, #{commentDescription}, #{commentUserUrl}, #{commentUserId}, #{commentUserName}, #{commentTime}, #{status}, #{reviewPersonId}, #{reviewPersonName}, #{reviewTime}, #{reviewReply}, #{createTime}, #{updateTime}, #{expireTime}, #{isDelete})
+        insert into video_comment(video_id,video_url, comment_description, comment_user_url, comment_user_id, comment_user_name, comment_time, status, review_person_id, review_person_name, review_time, review_reply, create_time, update_time, expire_time, is_delete)
+        values (#{videoId},#{videoUrl}, #{commentDescription}, #{commentUserUrl}, #{commentUserId}, #{commentUserName}, now(), #{status}, #{reviewPersonId}, #{reviewPersonName}, #{reviewTime}, #{reviewReply}, now(), #{updateTime}, #{expireTime}, 0)
     </insert>
 
     <insert id="insertBatch" keyProperty="commentId" useGeneratedKeys="true">

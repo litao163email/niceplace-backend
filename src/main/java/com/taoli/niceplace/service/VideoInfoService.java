@@ -33,6 +33,14 @@ public interface VideoInfoService {
 
 
     /**
+     * 视频页面
+     * @param videoInfo
+     * @param request
+     * @return
+     */
+    PageInfo<VideoInfo> getNewVideo(VideoInfo videoInfo, HttpServletRequest request);
+
+    /**
      * 查询-待审核的视频
      *
      * @param videoInfo 筛选条件

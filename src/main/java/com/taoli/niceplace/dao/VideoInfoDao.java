@@ -29,6 +29,16 @@ public interface VideoInfoDao {
      */
     List<VideoInfo> queryAllByLimit(VideoInfo videoInfo);
 
+
+    /**
+     * 获取优质合集视频
+     *
+     * @param videoInfo 查询条件
+     * @return 对象列表
+     */
+    List<VideoInfo> getNewVideo(VideoInfo videoInfo);
+
+
     /**
      * 统计总行数
      *

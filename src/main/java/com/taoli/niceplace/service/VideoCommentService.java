@@ -37,7 +37,7 @@ public interface VideoCommentService {
      * @param videoComment 实例对象
      * @return 实例对象
      */
-    Integer insert(VideoComment videoComment);
+    Integer insert(VideoComment videoComment,HttpServletRequest request);
 
     /**
      * 修改数据

@@ -51,14 +51,14 @@ public class VideoCommentController {
     }
 
     /**
-     * 新增数据
+     * 新增评论
      *
      * @param videoComment 实体
      * @return 新增结果
      */
     @PostMapping("/addComment")
-    public BaseResponse<Integer> add(VideoComment videoComment) {
-        return ResultUtils.success(this.videoCommentService.insert(videoComment));
+    public BaseResponse<Integer> add(@RequestBody VideoComment videoComment,HttpServletRequest request) {
+        return ResultUtils.success(this.videoCommentService.insert(videoComment,request));
     }
 
     /**

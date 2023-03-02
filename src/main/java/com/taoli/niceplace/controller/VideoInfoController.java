@@ -44,6 +44,18 @@ public class VideoInfoController {
     }
 
     /**
+     * 主页面查询
+     *
+     * @param videoInfo 筛选条件
+     * @return 查询结果
+     */
+    @GetMapping("/getNewVideo")
+    public BaseResponse<PageInfo<VideoInfo>> getNewVideo(VideoInfo videoInfo,HttpServletRequest request) {
+        return ResultUtils.success(this.videoInfoService.getNewVideo(videoInfo,request));
+    }
+
+
+    /**
      * 用户页-查询我发布的视频
      *
      * @return 数据

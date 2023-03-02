@@ -47,6 +47,8 @@ public class VideoInfo implements Serializable {
      * 视频类型码
      */
     private Integer videoTypeCode;
+
+    private ArrayList<Integer> videoTypeCodeList;
     /**
      * 视频名称
      */

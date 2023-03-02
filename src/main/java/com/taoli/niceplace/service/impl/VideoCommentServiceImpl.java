@@ -2,14 +2,21 @@ package com.taoli.niceplace.service.impl;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.taoli.niceplace.common.ErrorCode;
 import com.taoli.niceplace.entity.VideoComment;
 import com.taoli.niceplace.dao.VideoCommentDao;
+import com.taoli.niceplace.exception.BusinessException;
+import com.taoli.niceplace.model.domain.User;
 import com.taoli.niceplace.service.VideoCommentService;
 import org.springframework.stereotype.Service;
 import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
 
 /**
  * (VideoComment)表服务实现类
@@ -22,6 +29,15 @@ public class VideoCommentServiceImpl implements VideoCommentService {
     @Resource
     private VideoCommentDao videoCommentDao;
 
+    /**
+     * 黑名单人员
+     */
+    int BLACK_PERSON=5;
+
+    /**
+     * 审核中
+     */
+    int REVIEW_ING=4;
     /**
      * 通过ID查询单条数据
      *
@@ -52,7 +68,21 @@ public class VideoCommentServiceImpl implements VideoCommentService {
      * @return 实例对象
      */
     @Override
-    public Integer insert(VideoComment videoComment) {
+    public Integer insert(VideoComment videoComment,HttpServletRequest request) {
+        //对于非黑名单人员,即可进行评论
+        Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
+        User currentUser = (User) userObj;
+        //5是黑名单人员
+        if (currentUser.getUserRole() == BLACK_PERSON) {
+            throw new BusinessException(ErrorCode.BLACK_PERSON);
+        }
+        //设置评论人信息
+        videoComment.setCommentUserId(currentUser.getId());
+        videoComment.setCommentUserUrl(currentUser.getAvatarUrl());
+        videoComment.setCommentUserName(currentUser.getUsername());
+        //审核中
+        videoComment.setStatus(REVIEW_ING);
+
         int insert = this.videoCommentDao.insert(videoComment);
         return insert;
     }
