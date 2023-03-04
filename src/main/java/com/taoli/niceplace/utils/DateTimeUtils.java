@@ -21,7 +21,7 @@ public class DateTimeUtils {
      * 加注解 @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "GMT+8")
      *
      */
-    public static DateTimeFormatter dateTimeFormatter2Str() {
+    public static DateTimeFormatter getPattern() {
         //时间转码
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 

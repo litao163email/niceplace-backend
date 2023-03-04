@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.taoli.niceplace.common.ErrorCode;
 import com.taoli.niceplace.utils.DateTimeUtils;
-import com.taoli.niceplace.utils.ImageUrlApi;
+import com.taoli.niceplace.utils.ApiUtils;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
 import com.taoli.niceplace.model.domain.UserTeam;
@@ -109,7 +109,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
         // 8. 插入队伍信息到队伍表
         team.setId(null);
         team.setUserId(userId);
-        team.setAvatarUrl(ImageUrlApi.getImageUrl());
+        team.setAvatarUrl(ApiUtils.getImageUrl());
         boolean result = this.save(team);
         Long teamId = team.getId();
         if (!result || teamId == null) {
@@ -208,7 +208,7 @@ public class TeamServiceImpl extends ServiceImpl<TeamMapper, Team>
             teamUserVOList.add(teamUserVO);
         }
         //时间转码
-        DateTimeFormatter fmt = DateTimeUtils.dateTimeFormatter2Str();
+        DateTimeFormatter fmt = DateTimeUtils.getPattern();
 //        teamUserVOList.forEach(res->{
 //            res.setExpireTimeStr(res.getExpireTime().format(fmt));
 //        });

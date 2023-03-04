@@ -7,6 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * (VideoInfo)表服务接口
@@ -46,7 +47,7 @@ public interface VideoInfoService {
      * @param videoInfo 筛选条件
      * @return 查询结果
      */
-    PageInfo<VideoInfo> adminQuery(VideoInfo videoInfo,HttpServletRequest request);
+    PageInfo<VideoInfo> adminQuery(VideoInfo videoInfo, HttpServletRequest request);
 
     /**
      * 新增数据

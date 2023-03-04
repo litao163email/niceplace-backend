@@ -1,8 +1,6 @@
 #自定义配置
 mywebmvc:
   cros: http://localhost:3000,http://localhost:5173,http://localhost:9001
-  #设置@CrossOrigin
-  cros2: http://localhost:9001
 
 #spring配置
 spring:
@@ -40,16 +38,16 @@ server:
       cookie:
         #cookie在domain指定的ip进行共享
         domain: localhost
+
 mybatis-plus:
   configuration:
     map-underscore-to-camel-case: false
-#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
       logic-delete-field: isDelete # 全局逻辑删除的实体字段名(since 3.3.0,配置后可以忽略不配置步骤2)
       logic-delete-value: 1 # 逻辑已删除值(默认为 1)
       logic-not-delete-value: 0 # 逻辑未删除值(默认为 0)
-
 mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:

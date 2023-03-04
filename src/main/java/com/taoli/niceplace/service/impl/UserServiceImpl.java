@@ -5,8 +5,8 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.taoli.niceplace.common.ErrorCode;
-import com.taoli.niceplace.utils.ImageUrlApi;
-import com.taoli.niceplace.constant.UserConstant;
+import com.taoli.niceplace.utils.ApiUtils;
+import com.taoli.niceplace.constant.Constant;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
 import com.taoli.niceplace.service.UserService;
@@ -26,7 +26,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+import static com.taoli.niceplace.constant.Constant.USER_LOGIN_STATE;
 
 /**
  * 用户服务实现类
@@ -59,7 +59,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
             throw new BusinessException(ErrorCode.PARAMS_ERROR, "用户密码过短,至少8位");
         }
         if (userName.length() > 9) {
-            throw new BusinessException(ErrorCode.PARAMS_ERROR, "niceplace编号过长,至多9位");
+            throw new BusinessException(ErrorCode.PARAMS_ERROR, "名字过长,至多9位");
         }
         // 账户不能包含特殊字符
         String validPattern = "[`~!@#$%^&*()+=|{}':;',\\\\[\\\\].<>/?~！@#￥%……&*（）——+|{}【】‘；：”“’。，、？]";
@@ -93,7 +93,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         user.setUserAccount(userAccount);
         user.setUserPassword(encryptPassword);
         user.setUsername(userName);
-        user.setAvatarUrl(ImageUrlApi.getImageUrl());
+        user.setAvatarUrl(ApiUtils.getImageUrl());
         boolean saveResult = this.save(user);
         if (!saveResult) {
             return -1;
@@ -249,7 +249,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
         // 仅管理员可查询
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User user = (User) userObj;
-        return user != null && user.getUserRole() == UserConstant.ADMIN_ROLE;
+        return user != null && user.getUserRole() == Constant.ADMIN_ROLE;
     }
 
     /**
@@ -260,7 +260,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User>
      */
     @Override
     public boolean isAdmin(User loginUser) {
-        return loginUser != null && loginUser.getUserRole() == UserConstant.ADMIN_ROLE;
+        return loginUser != null && loginUser.getUserRole() == Constant.ADMIN_ROLE;
     }
 
     @Override

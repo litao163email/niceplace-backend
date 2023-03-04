@@ -12,8 +12,8 @@ public enum VideoTypeCode {
     FOOD(2, "美食", ""),
     MOVIE(3, "电影", ""),
     FUNNY(4, "搞笑", ""),
-    LIFE(5, "生活", "");
-
+    LIFE(5, "生活", ""),
+    PREMIUM_COLLECTION(8, "优质", "");
     private final int code;
 
     /**

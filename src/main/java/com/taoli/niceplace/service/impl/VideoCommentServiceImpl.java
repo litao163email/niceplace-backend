@@ -9,14 +9,11 @@ import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
 import com.taoli.niceplace.service.VideoCommentService;
 import org.springframework.stereotype.Service;
-import org.springframework.data.domain.PageRequest;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+import static com.taoli.niceplace.constant.Constant.USER_LOGIN_STATE;
 
 /**
  * (VideoComment)表服务实现类

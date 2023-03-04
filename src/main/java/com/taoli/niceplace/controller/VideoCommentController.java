@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/videoComment")
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class VideoCommentController {
     /**
      * 服务对象

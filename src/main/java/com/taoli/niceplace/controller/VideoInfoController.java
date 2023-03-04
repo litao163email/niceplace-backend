@@ -1,8 +1,10 @@
 package com.taoli.niceplace.controller;
 
 import com.github.pagehelper.PageInfo;
+import com.taoli.niceplace.common.AccessLimit;
 import com.taoli.niceplace.common.BaseResponse;
 import com.taoli.niceplace.common.ResultUtils;
+import com.taoli.niceplace.common.UserTypeCode;
 import com.taoli.niceplace.entity.VideoInfo;
 import com.taoli.niceplace.service.VideoInfoService;
 import lombok.extern.slf4j.Slf4j;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * (VideoInfo)表控制层
@@ -23,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/video")
 @Slf4j
+@CrossOrigin(origins = {"http://localhost:5173"})
 public class VideoInfoController {
     /**
      * 服务对象
@@ -44,13 +48,13 @@ public class VideoInfoController {
     }
 
     /**
-     * 主页面查询
+     * 视频主页面
      *
      * @param videoInfo 筛选条件
      * @return 查询结果
      */
     @GetMapping("/getNewVideo")
-    public BaseResponse<PageInfo<VideoInfo>> getNewVideo(VideoInfo videoInfo,HttpServletRequest request) {
+    public BaseResponse<PageInfo<VideoInfo>> getNewVideo(VideoInfo videoInfo, HttpServletRequest request) {
         return ResultUtils.success(this.videoInfoService.getNewVideo(videoInfo,request));
     }
 

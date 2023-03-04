@@ -41,7 +41,7 @@ public class VideoInfo implements Serializable {
 
     private ArrayList<Integer> statusList;
 
-    private Integer reviewPersonId;
+    private long reviewPersonId;
 
     /**
      * 视频类型码
@@ -111,6 +111,11 @@ public class VideoInfo implements Serializable {
      * 在文件服务器中是否删除(0/1删除)
      */
     private Integer oosIsDelete;
+
+    /**
+     * 更新时间
+     */
+    private long watchTime;
 
 
     /**

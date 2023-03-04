@@ -4,6 +4,8 @@ mywebmvc:
 
 # 注意开源时这个文件不要提交、或者不要填真实配置
 spring:
+  application:
+    name: niceplace-backend
   # DataSource Config
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver

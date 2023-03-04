@@ -103,10 +103,8 @@
             <if test="videoTypeCode != null and videoTypeCode != ''">
                 and video_type_code = #{videoTypeCode}
             </if>
-            <if test="password != null and password != ''">
-                and password = #{password}
-            </if>
         </where>
+
     </select>
 
     <!--查询指定行数据-->
@@ -183,7 +181,6 @@
             </if>
         </where>
         order by create_time desc
-        limit #{pageNum},#{pageSize}
     </select>
 
     <!--统计总行数-->
@@ -327,6 +324,9 @@
             <if test="userId != null">
                 user_id = #{userId},
             </if>
+            <if test="reviewPersonId != null">
+                review_person_id = #{reviewPersonId},
+            </if>
             <if test="teamId != null">
                 team_id = #{teamId},
             </if>
@@ -340,7 +340,7 @@
                 create_time = #{createTime},
             </if>
             <if test="updateTime != null">
-                update_time = #{updateTime},
+                update_time = now(),
             </if>
             <if test="expireTime != null">
                 expire_time = #{expireTime},
@@ -357,6 +357,7 @@
             <if test="password != null and password != ''">
                 password = #{password},
             </if>
+            review_time = now()
         </set>
         where id = #{id}
     </update>

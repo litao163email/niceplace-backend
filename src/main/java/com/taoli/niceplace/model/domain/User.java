@@ -1,6 +1,7 @@
 package com.taoli.niceplace.model.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
+import com.taoli.niceplace.common.UserTypeCode;
 import lombok.Data;
 
 import java.io.Serializable;

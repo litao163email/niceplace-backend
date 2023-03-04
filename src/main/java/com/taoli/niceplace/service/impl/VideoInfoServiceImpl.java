@@ -3,9 +3,12 @@ package com.taoli.niceplace.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.taoli.niceplace.common.ErrorCode;
+import com.taoli.niceplace.common.RedisCode;
+import com.taoli.niceplace.constant.Constant;
+import com.taoli.niceplace.dao.VideoCommentDao;
+import com.taoli.niceplace.entity.VideoComment;
 import com.taoli.niceplace.mapper.UserMapper;
-import com.taoli.niceplace.utils.DateTimeUtils;
-import com.taoli.niceplace.utils.ImageUrlApi;
+import com.taoli.niceplace.utils.ApiUtils;
 import com.taoli.niceplace.common.VideoStatusCode;
 import com.taoli.niceplace.entity.VideoInfo;
 import com.taoli.niceplace.dao.VideoInfoDao;
@@ -15,21 +18,18 @@ import com.taoli.niceplace.service.UserService;
 import com.taoli.niceplace.service.VideoInfoService;
 import lombok.extern.slf4j.Slf4j;
 import org.redisson.api.RBloomFilter;
-import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+import static com.taoli.niceplace.constant.Constant.USER_LOGIN_STATE;
 
 /**
  * (VideoInfo)表服务实现类
@@ -44,31 +44,13 @@ public class VideoInfoServiceImpl implements VideoInfoService {
     private VideoInfoDao videoInfoDao;
 
     @Resource
+    private VideoCommentDao videoCommentDao;
+
+    @Resource
     private UserService userService;
 
     @Resource
     private UserMapper mapper;
-
-    /**
-     * redis 视频标记
-     */
-    private static String VIDEO_MARK = "video";
-    /**
-     * redis 视频id标记
-     */
-    private static String ID_MARK = "id";
-    /**
-     * redis 存储视频详细信息标记
-     */
-    private static String VIDEO_INFO_MARK = "id";
-
-
-    /**
-     * 优质视频合集 标识
-     * video_info表视频类型
-     */
-    private static int PREMIUM_COLLECTION = 8;
-
 
     @Resource
     private RedissonClient redissonClient;
@@ -79,20 +61,28 @@ public class VideoInfoServiceImpl implements VideoInfoService {
      * @return 实例对象
      */
     @Override
-    public PageInfo<VideoInfo> queryById(VideoInfo videoInfo, HttpServletRequest request) {
+    public PageInfo<VideoInfo>queryById(VideoInfo videoInfo, HttpServletRequest request) {
 
-        //如果是用户自己，只能查询0(正常)、1(下架)、2(作者设置不可见)、3(加密)、4(审核中)，其余不允许
+        //如果是用户自己，只能查询0(正常)/1(下架)/2(作者设置不可见)/3(加密)/4(审核中)
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser != null) {
             videoInfo.setUserId(currentUser.getId());
-            videoInfo.setStatusList(new ArrayList<>(Arrays.asList(0, 1, 2, 3, 4)));
+            videoInfo.setStatusList(new ArrayList<>(Arrays.asList(
+                    VideoStatusCode.NORMAL.getCode(),
+                    VideoStatusCode.REMOVE.getCode(),
+                    VideoStatusCode.INVISIBLE.getCode(),
+                    VideoStatusCode.ENCRYPTED.getCode(),
+                    VideoStatusCode.REVIEW.getCode()
+                    )));
         } else {
             //未登录
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
+        int currentPage = ((null == videoInfo.getPageNum()) ? 1 : videoInfo.getPageNum());
+        int pageSize = ((null == videoInfo.getPageSize()) ? 10 : videoInfo.getPageSize());
 
-        PageHelper.startPage(videoInfo.getPageNum(), videoInfo.getPageSize());
+        PageHelper.startPage(currentPage, pageSize);
         List<VideoInfo> videoInfos = this.videoInfoDao.queryAllByLimit(videoInfo);
 
         videoInfos.forEach(res -> {
@@ -100,7 +90,6 @@ public class VideoInfoServiceImpl implements VideoInfoService {
             User user = mapper.selectById(res.getUserId());
             res.setUser(user);
         });
-
         return new PageInfo<>(videoInfos);
     }
 
@@ -119,32 +108,46 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser != null) {
-            videoInfo.setStatusList(new ArrayList<>(Arrays.asList(0)));
+            //查看该用户的视频
+            videoInfo.setUserId(videoInfo.getUserId());
+            videoInfo.setStatusList(new ArrayList<>(Arrays.asList(
+                    VideoStatusCode.NORMAL.getCode()
+            )));
         } else {
             //未登录
+
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
 
-        PageHelper.startPage(videoInfo.getPageNum(), videoInfo.getPageSize());
+        int currentPage = ((null == videoInfo.getPageNum()) ? 1 : videoInfo.getPageNum());
+        int pageSize = ((null == videoInfo.getPageSize()) ? 10 : videoInfo.getPageSize());
+            //注释掉,避免mybatis缓存导致重复错误
+        PageHelper.startPage(currentPage, pageSize);
         List<VideoInfo> videoInfos = this.videoInfoDao.queryAllByLimit(videoInfo);
 
+        //注释原因:暂时不在用户页看视频过滤用户看过的,保持视频流动性
         //布隆过滤器:过滤重复的视频
-        long id = currentUser.getId();
-        String userRedisMark = VIDEO_MARK + ":" + ID_MARK + ":" + id;
-        RBloomFilter<Integer> seqIdBloomFilter = redissonClient.getBloomFilter(userRedisMark);
-        RMap<String, Double> preferences = redissonClient.getMap("user:123:preferences");
+//        long id = currentUser.getId();
+//        String userRedisMark = RedissionMarkCode.VIDEO_MARK.getCode() + ":" + RedissionMarkCode.ID_MARK.getCode() + ":" + id;
+//        RBloomFilter<Integer> seqIdBloomFilter = redissonClient.getBloomFilter(userRedisMark);
+//        videoInfos.forEach(res -> {
+//            if (seqIdBloomFilter.contains(res.getId())) {
+//                res.setId(0);
+//            }
+//            //获取用户头像,用作视频所属者头像
+//            User user = mapper.selectById(res.getUserId());
+//            res.setUser(user);
+//        });
+//        //过滤掉等于0的视频
+//        List<VideoInfo> videoInfoList = videoInfos.stream().filter(item -> item.getId() != 0).collect(Collectors.toList());
+
         videoInfos.forEach(res -> {
-            if (seqIdBloomFilter.contains(res.getId())) {
-                res.setId(0);
-            }
             //获取用户头像,用作视频所属者头像
             User user = mapper.selectById(res.getUserId());
             res.setUser(user);
         });
-        //过滤掉等于0的视频
-        List<VideoInfo> videoInfoList = videoInfos.stream().filter(item -> item.getId() != 0).collect(Collectors.toList());
 
-        return new PageInfo<>(videoInfoList);
+        return new PageInfo<>(videoInfos);
     }
 
 
@@ -159,22 +162,25 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         if (currentUser != null) {
-            //查询自定义类型的数据：视频类型(0-美女,1-风景,2-美食,3-电影,4-搞笑,8-优质视频集合)
-            videoInfo.setVideoTypeCodeList(new ArrayList<>(Arrays.asList(0, 1, 8)));
-            videoInfo.setStatus(0);
+            //暂时不限制推荐品类
+//            videoInfo.setVideoTypeCodeList(new ArrayList<>(Arrays.asList(
+//                    VideoTypeCode.BEAUTY.getCode(),
+//                    VideoTypeCode.MOVIE.getCode()
+//            )));
+            videoInfo.setStatus(VideoStatusCode.NORMAL.getCode());
         } else {
             //未登录
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
 
         long userId = currentUser.getId();
-        String userRedisMark = VIDEO_MARK + ":" + ID_MARK + ":" + userId;
+        String userRedisMark = RedisCode.VIDEO_MARK.getCode() + ":" + RedisCode.ID_MARK.getCode() + ":" + userId;
         //用户id对应的布隆过滤器
         RBloomFilter<Object> bloomFilter = redissonClient.getBloomFilter(userRedisMark);
 
         //开始查询视频信息,默认是第1个(视频按时间顺序倒序)
-        int pageNum = 1;
-        int pageSize = 11;
+        int currentPage = ((null == videoInfo.getPageNum()) ? 1 : videoInfo.getPageNum());
+        int pageSize = ((null == videoInfo.getPageSize()) ? 10 : videoInfo.getPageSize());
 
         //返回的视频数量
         int pageEnd = 10;
@@ -192,13 +198,8 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         while (videoInfoSum.size() < pageSize) {
 
             long sqlStart = System.currentTimeMillis();
-            //大坑:使用pageHelper千万不要像以下这样使用,会出现重复为videoInfoFromMysql的查询size为0的
-            //原因是mybatis对于相同的查询语句使用了缓存Cache Hit Ratio,而pageHelper是在查询出结果之后再分页的!
-//            PageHelper.startPage(pageNum*n, pageSize);
 
-            //务必要手动写pageNum和pageSize,否则相同语句会出现缓存!
-            videoInfo.setPageNum(pageNum);
-            videoInfo.setPageSize(pageSize);
+            PageHelper.startPage(currentPage, pageSize);
             List<VideoInfo> videoInfoFromMysql = this.videoInfoDao.getNewVideo(videoInfo);
             //这上面的查询语句存在一个问题,每次查都要从头开始查,数据库查询次数会很多,下面的视频是没机会先查到吗?
             //优化思路:
@@ -236,7 +237,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
 
             //如果第一次过滤查出来的视频数小于10个
             if (streamList.size() < pageEnd) {
-                pageNum = pageSize * n + pageNum;
+                currentPage = pageSize * n + currentPage;
                 //下一轮查询
                 n++;
             }
@@ -269,22 +270,23 @@ public class VideoInfoServiceImpl implements VideoInfoService {
     @Override
     public PageInfo<VideoInfo> adminQuery(VideoInfo videoInfo, HttpServletRequest request) {
 
+        int currentPage = ((null == videoInfo.getPageNum()) ? 1 : videoInfo.getPageNum());
+        int pageSize = ((null == videoInfo.getPageSize()) ? 10 : videoInfo.getPageSize());
+
         log.info("审核视频查询入参:" + videoInfo);
-        //能查询审核的视频，状态(4-审核中)'
+
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
         log.info("审核视频的人:" + currentUser);
         if (currentUser != null && userService.isAdmin(currentUser)) {
-            videoInfo.setStatusList(new ArrayList<>(Collections.singletonList(VideoStatusCode.REVIEW.getCode())));
+            //能查询审核的视频，状态(4-审核中)'
+            videoInfo.setStatusList(new ArrayList<>(Collections.singletonList(4)));
         } else {
             //未登录
             throw new BusinessException(ErrorCode.NOT_LOGIN);
         }
-
-        PageHelper.startPage(videoInfo.getPageNum(), videoInfo.getPageSize());
+        PageHelper.startPage(currentPage,pageSize);
         List<VideoInfo> videoInfos = this.videoInfoDao.queryAllByLimit(videoInfo);
-        //时间转码
-        DateTimeFormatter fmt = DateTimeUtils.dateTimeFormatter2Str();
         videoInfos.forEach(res -> {
             //获取用户头像,用作视频头像
             User user = mapper.selectById(res.getUserId());
@@ -335,7 +337,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         //设置是否删除
         videoInfo.setIsDelete(0);
         videoInfo.setOosIsDelete(0);
-        videoInfo.setPictureUrl(ImageUrlApi.getImageUrl());
+        videoInfo.setPictureUrl(ApiUtils.getImageUrl());
         videoInfo.setExpireTime(LocalDateTime.now());
         //这里不对视频类型进行审批,由用户决定,在管理员审批阶段再可以移去某些视频类型
 
@@ -344,7 +346,7 @@ public class VideoInfoServiceImpl implements VideoInfoService {
     }
 
     /**
-     * 修改数据
+     * 视频审核
      *
      * @return 实例对象
      */
@@ -353,18 +355,45 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         Object userObj = request.getSession().getAttribute(USER_LOGIN_STATE);
         User currentUser = (User) userObj;
 
-        //审核员id
-        videoInfo.setUserId(currentUser.getId());
-
         if (!userService.isAdmin(currentUser)) {
             //无权限
             throw new BusinessException(ErrorCode.NO_AUTH);
         }
 
+        //审核员id
+        videoInfo.setReviewPersonId(currentUser.getId());
+        videoInfo.setUserId(currentUser.getId());
 
-        log.info("审核意见:" + videoInfo.getStatus());
+        //对于导入的视频进行数据上的补充
+        videoInfo.setDescription(ApiUtils.getText());
+        videoInfo.setVideoUrl(ApiUtils.getImageUrl());
+
+        log.info("视频id为{}的审核意见:{}",videoInfo.getId(),videoInfo.getStatus());
         int update = this.videoInfoDao.update(videoInfo);
+
+        //对审核通过的数据插入一条评论
+        asyncInsertCommentWhenReview(videoInfo);
+
         return update;
+    }
+
+    @Async
+    public void asyncInsertCommentWhenReview(VideoInfo videoInfo){
+        //对审核通过的数据插入一条评论
+        VideoComment videoComment = new VideoComment();
+        videoComment.setVideoId(videoInfo.getId());
+        videoComment.setVideoUrl(videoInfo.getVideoUrl());
+        videoComment.setCommentDescription(Constant.INIT_COMMENT);
+        videoComment.setCommentUserUrl(Constant.INIT_COMMENT_USER_URL);
+        videoComment.setCommentUserId(Constant.INIT_COMMENT_USER);
+        videoComment.setCommentUserName(Constant.INIT_COMMENT_USER_NAME);
+        videoComment.setStatus(0);
+        int insert = this.videoCommentDao.insert(videoComment);
+        if(insert>0){
+            log.info("插入评论成功,视频id为:{}",videoInfo.getId());
+        }else {
+            log.info("插入评论失败,视频id为:{}",videoInfo.getId());
+        }
     }
 
     /**

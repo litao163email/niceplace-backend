@@ -1,28 +1,25 @@
 package com.taoli.niceplace.controller;
 
-import com.github.pagehelper.PageInfo;
 import com.taoli.niceplace.common.BaseResponse;
 import com.taoli.niceplace.common.ErrorCode;
+import com.taoli.niceplace.common.RedisCode;
 import com.taoli.niceplace.common.ResultUtils;
 import com.taoli.niceplace.entity.VideoInfo;
 import com.taoli.niceplace.exception.BusinessException;
 import com.taoli.niceplace.model.domain.User;
-import com.taoli.niceplace.service.VideoInfoService;
+import com.taoli.niceplace.utils.DateTimeUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.redisson.api.RBloomFilter;
-import org.redisson.api.RMap;
-import org.redisson.api.RSortedSet;
 import org.redisson.api.RedissonClient;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Arrays;
 
-import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+import java.time.LocalDateTime;
+
+import static com.taoli.niceplace.constant.Constant.USER_LOGIN_STATE;
 
 /**
  * 用户app行为记录
@@ -32,20 +29,12 @@ import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/behavior")
+@CrossOrigin(origins = {"http://localhost:5173"})
 @Slf4j
 public class UserBehaviorRecordController {
 
     @Resource
     private RedissonClient redissonClient;
-
-    /**
-     * redis 视频标记
-     */
-    private static String VIDEO_MARK="video";
-    /**
-     * redis 视频id标记
-     */
-    private static String ID_MARK="id";
 
     /**
      * 埋点记录用户点击视频的id
@@ -61,7 +50,7 @@ public class UserBehaviorRecordController {
         }
 
         long userId = currentUser.getId();
-        String userRedisMark = VIDEO_MARK + ":" + ID_MARK + ":" + userId;
+        String userRedisMark = RedisCode.VIDEO_MARK.getCode() + ":" + RedisCode.ID_MARK.getCode() + ":" + userId;
 
         RBloomFilter<Integer> seqIdBloomFilter = redissonClient.getBloomFilter(userRedisMark);
         //预期元素数量和误差率:预期元素数量是指布隆过滤器预期处理的元素数量，误差率是指布隆过滤器误判的概率。
@@ -71,6 +60,9 @@ public class UserBehaviorRecordController {
         if(videoInfo.getId()>0){
                 //向该用户id下添加视频的id
             seqIdBloomFilter.add(videoInfo.getId());
+            //todo 例如记录用户的操作日志,用于分析用户视频行为爱好
+            //这些信息可以用日志分析系统(如EKL)提取出来,所以注意应该明确提取点,如:用户id、视频id、毫秒
+            log.info("时间{}:用户id{}观看了视频id{}时长{}毫秒", LocalDateTime.now().format(DateTimeUtils.getPattern()),currentUser.getId(),videoInfo.getId(),videoInfo.getWatchTime());
         }else{
             //仅作为用户注册布隆过滤器的接口(不先注册在查询时会出错),不作任何动作,此接口埋点在用户点击视频导航栏时触发
             //todo 预留其它操作

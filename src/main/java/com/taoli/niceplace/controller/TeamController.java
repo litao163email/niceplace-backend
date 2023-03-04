@@ -31,7 +31,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
+import static com.taoli.niceplace.constant.Constant.USER_LOGIN_STATE;
 
 /**
  * 队伍接口
@@ -40,7 +40,7 @@ import static com.taoli.niceplace.constant.UserConstant.USER_LOGIN_STATE;
  */
 @RestController
 @RequestMapping("/team")
-@CrossOrigin(origins = {"${mywebmvc.cros2}"})
+@CrossOrigin(origins = {"http://localhost:5173"})
 @Slf4j
 public class TeamController {
 

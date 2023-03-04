@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@MapperScan("com.taoli.niceplace.mapper")
+@MapperScan({"com.taoli.niceplace.mapper","com.taoli.niceplace.dao"})
 public class MybatisPlusConfig {
 
     /**

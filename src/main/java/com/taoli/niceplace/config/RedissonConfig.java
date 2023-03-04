@@ -1,5 +1,6 @@
 package com.taoli.niceplace.config;
 
+import com.taoli.niceplace.constant.Constant;
 import lombok.Data;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
@@ -25,7 +26,7 @@ public class RedissonConfig {
         // 1. 创建配置
         Config config = new Config();
         String redisAddress = String.format("redis://%s:%s", host, port);
-        config.useSingleServer().setAddress(redisAddress).setDatabase(14);
+        config.useSingleServer().setAddress(redisAddress).setDatabase(Constant.REDIS_DATABASE_NUM);
         // 2. 创建实例
         RedissonClient redisson = Redisson.create(config);
         return redisson;
