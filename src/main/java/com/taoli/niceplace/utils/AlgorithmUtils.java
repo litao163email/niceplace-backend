@@ -18,6 +18,7 @@ public class AlgorithmUtils {
      * @param tagList2
      * @return
      */
+    @Deprecated
     public static int minDistance(List<String> tagList1, List<String> tagList2) {
         int n = tagList1.size();
         int m = tagList2.size();
@@ -58,6 +59,7 @@ public class AlgorithmUtils {
      * @param word2
      * @return
      */
+    @Deprecated
     public static int minDistance(String word1, String word2) {
         int n = word1.length();
         int m = word2.length();

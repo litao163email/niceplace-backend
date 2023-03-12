@@ -13,6 +13,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 /**
+ * (已开发API统一平台,请使用引入的SDK开发)
+ *
  * 第三方接口
  *
  * @author chatgpt, taoli
@@ -27,6 +29,7 @@ public class ApiUtils {
      * @return String
      * 示例:"https:\/\/tva1.sinaimg.cn\/large\/9bd9b167ly1fzjxz375iwj20b40b4t9c.jpg"
      */
+    @Deprecated
     public static String getImageUrl() {
         //第三方接口自动获取图片url:https://api.btstu.cn/
         String niceImageGiver = "https://api.btstu.cn/sjtx/api.php?lx=c1&format=json";
@@ -42,6 +45,7 @@ public class ApiUtils {
      * <p>
      * (这里之后可以开发属于自己的评论API,目前只作为视频的文案)
      */
+    @Deprecated
     public static String getText() {
         //第三方获取毒鸡汤接口:https://api.btstu.cn/
         String niceImageGiver = "https://api.btstu.cn/yan/api.php?charset=utf-8&encode=json";

@@ -52,4 +52,7 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
+api:
+  client:
+    access-key: 12345678
+    secret-key: 12345678
