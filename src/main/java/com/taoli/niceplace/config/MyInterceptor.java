@@ -36,9 +36,9 @@ public class MyInterceptor implements HandlerInterceptor {
         User currentUser = (User) userObj;
         log.info("进入拦截器的用户:" + currentUser);
         //todo
-        if (!Optional.ofNullable(currentUser).isPresent()) {
-            return false;
-        }
+//        if (!Optional.ofNullable(currentUser).isPresent()) {
+//            return false;
+//        }
         return true;
     }
 
