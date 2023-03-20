@@ -18,6 +18,22 @@ import java.io.Serializable;
 @Data
 public class VideoInfo implements Serializable {
     private static final long serialVersionUID = -81721029826522896L;
+
+    private static final ThreadLocal<VideoInfo> THREAD_LOCAL = new ThreadLocal<>();
+
+
+    public static void add(VideoInfo videoInfo){
+        THREAD_LOCAL.set(videoInfo);
+    }
+
+    public static VideoInfo get(){
+        return THREAD_LOCAL.get();
+    }
+
+    public static void remove() {
+        THREAD_LOCAL.remove();
+    }
+
     /**
      * 主键
      */

@@ -35,7 +35,6 @@ public class VideoInfoController {
     private VideoInfoService videoInfoService;
 
 
-
     /**
      * 主页面查询
      *
@@ -43,8 +42,8 @@ public class VideoInfoController {
      * @return 查询结果
      */
     @GetMapping("/getVideoList")
-    public BaseResponse<PageInfo<VideoInfo>> queryByPage(VideoInfo videoInfo,HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.queryByPage(videoInfo,request));
+    public BaseResponse<PageInfo<VideoInfo>> queryByPage(VideoInfo videoInfo, HttpServletRequest request) {
+        return ResultUtils.success(this.videoInfoService.queryByPage(videoInfo, request));
     }
 
     /**
@@ -55,7 +54,7 @@ public class VideoInfoController {
      */
     @GetMapping("/getNewVideo")
     public BaseResponse<PageInfo<VideoInfo>> getNewVideo(VideoInfo videoInfo, HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.getNewVideo(videoInfo,request));
+        return ResultUtils.success(this.videoInfoService.getNewVideo(videoInfo, request));
     }
 
 
@@ -65,8 +64,8 @@ public class VideoInfoController {
      * @return 数据
      */
     @GetMapping("/getMyVideo")
-    public BaseResponse<PageInfo<VideoInfo>> queryById(VideoInfo videoInfo,HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.queryById(videoInfo,request));
+    public BaseResponse<PageInfo<VideoInfo>> queryById(VideoInfo videoInfo, HttpServletRequest request) {
+            return ResultUtils.success(this.videoInfoService.queryById(videoInfo, request));
     }
 
     /**
@@ -76,7 +75,7 @@ public class VideoInfoController {
      */
     @GetMapping("/reviewVideo")
     public BaseResponse<PageInfo<VideoInfo>> adminQuery(VideoInfo videoInfo, HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.adminQuery(videoInfo,request));
+        return ResultUtils.success(this.videoInfoService.adminQuery(videoInfo, request));
     }
 
     /**
@@ -86,8 +85,8 @@ public class VideoInfoController {
      * @return 新增结果
      */
     @PostMapping("/addVideo")
-    public BaseResponse<Integer> add(@RequestBody VideoInfo videoInfo,HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.insert(videoInfo,request));
+    public BaseResponse<Integer> add(@RequestBody VideoInfo videoInfo, HttpServletRequest request) {
+        return ResultUtils.success(this.videoInfoService.insert(videoInfo, request));
     }
 
     /**
@@ -96,8 +95,8 @@ public class VideoInfoController {
      * @return 编辑结果
      */
     @PostMapping("/updateVideoStatus")
-    public BaseResponse<Integer> updateVideoStatus(@RequestBody VideoInfo videoInfo,HttpServletRequest request) {
-        return ResultUtils.success(this.videoInfoService.update(videoInfo,request));
+    public BaseResponse<Integer> updateVideoStatus(@RequestBody VideoInfo videoInfo, HttpServletRequest request) {
+        return ResultUtils.success(this.videoInfoService.update(videoInfo, request));
     }
 
     /**
