@@ -2,9 +2,7 @@ package com.taoli.niceplace;
 
 import com.taoli.apiclientsdk.client.ApiClient;
 import com.taoli.apiclientsdk.model.ClientParam;
-import com.taoli.niceplace.common.JoinThread;
-import com.taoli.niceplace.common.TakeTurnsPrint;
-import com.taoli.niceplace.common.TurnsPrint;
+import com.taoli.niceplace.common.*;
 import com.taoli.niceplace.entity.VideoInfo;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -146,6 +144,24 @@ class MyApplicationTest {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    /**
+     * 测试thead-多个线程使用同一Synchronized代码块的锁对象
+     */
+    @Test
+    void testSynchronizedThread() {
+        Ticket ticket = new Ticket();
+
+        SynchronizedThread windows1 = new SynchronizedThread("窗口1", ticket);
+        SynchronizedThread windows2 = new SynchronizedThread("窗口2", ticket);
+        SynchronizedThread windows3 = new SynchronizedThread("窗口3", ticket);
+
+        //123都是进入预备状态
+        windows1.start();
+        windows2.start();
+        windows3.start();
+        //打印3、2、3卖票
     }
 }
 
