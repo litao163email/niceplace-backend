@@ -41,8 +41,8 @@ public class SwaggerConfig {
         return new ApiInfoBuilder()
                 .title("桃李用户中心")
                 .description("桃李用户中心接口文档")
-                .termsOfServiceUrl("https://github.com/litao163email")
-                .contact(new Contact("taoli","https://github.com/litao163email","litao163email@163.com"))
+                .termsOfServiceUrl("https://github.com")
+                .contact(new Contact("taoli","https://github.com","litao@163.com"))
                 .version("1.0")
                 .build();
     }
