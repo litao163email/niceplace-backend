@@ -1,10 +1,7 @@
 package com.taoli.niceplace.service.impl;
 
-import cn.hutool.core.util.RandomUtil;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.taoli.apiclientsdk.client.ApiClient;
-import com.taoli.apiclientsdk.model.ClientParam;
 import com.taoli.niceplace.common.ErrorCode;
 import com.taoli.niceplace.common.RedisCode;
 import com.taoli.niceplace.constant.Constant;
@@ -57,9 +54,6 @@ public class VideoInfoServiceImpl implements VideoInfoService {
 
     @Resource
     private RedissonClient redissonClient;
-
-    @Resource
-    ApiClient apiClient;
 
     /**
      * 查询我发布的视频(中心)
@@ -369,14 +363,10 @@ public class VideoInfoServiceImpl implements VideoInfoService {
         //审核员id
         videoInfo.setReviewPersonId(currentUser.getId());
 //        videoInfo.setUserId(currentUser.getId());
-        videoInfo.setViewCount(RandomUtil.randomInt(50,200));
-        videoInfo.setLikeCount(RandomUtil.randomInt(10,100));
         //对于导入的视频进行数据上的补充
-//        videoInfo.setDescription(ApiUtils.getText());
-//        videoInfo.setVideoUrl(ApiUtils.getImageUrl());
+        videoInfo.setDescription(ApiUtils.getText());
+        videoInfo.setVideoUrl(ApiUtils.getImageUrl());
 
-        videoInfo.setDescription(apiClient.getText(new ClientParam()));
-        videoInfo.setPictureUrl(apiClient.getImageUrl(new ClientParam()));
 
         log.info("视频id为{}的审核意见:{}",videoInfo.getId(),videoInfo.getStatus());
         int update = this.videoInfoDao.update(videoInfo);

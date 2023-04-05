@@ -17,11 +17,6 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
-        <dependency>
-            <groupId>com.taoli</groupId>
-            <artifactId>api-client-sdk</artifactId>
-            <version>0.0.1</version>
-        </dependency>
         <!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-starter-aop -->
         <!--切面-->
         <dependency>

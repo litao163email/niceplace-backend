@@ -52,9 +52,3 @@ mybatis:
   mapper-locations: classpath:mapper/*.xml
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
-
-#自家API平台(欢迎大家访问我的github了解更多API平台信息:https://github.com/litao163email/api-backend)
-api:
-  client:
-    access-key: 12345678
-    secret-key: 12345678
